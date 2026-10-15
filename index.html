@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#F6F4F0">
+<meta name="robots" content="noindex,nofollow">
+<title>InmoCalm</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 56'%3E%3Crect x='2.5' y='3.5' width='15' height='49' fill='%23ECE7E0' stroke='%23A84B2F' stroke-width='2'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Italiana&family=Jost:wght@300;400;500&display=swap">
+<style id="shell-css">
+html,body{margin:0;background:#F6F4F0;color:#3A2A1E;font-family:"Jost",Arial,sans-serif}
+#gate{min-height:100vh;min-height:100dvh;display:flex;align-items:center;justify-content:center;padding:24px 16px;box-sizing:border-box}
+#gate .card{max-width:360px;width:100%;text-align:center}
+#gate .logo{display:flex;align-items:flex-end;justify-content:center;gap:2px;font-family:"Italiana",Georgia,serif;font-size:52px;line-height:1;letter-spacing:.02em}
+#gate .logo svg{height:46px;width:auto;margin:0 1px 4px}
+#gate p{color:#826856;font-size:15px;line-height:1.5;margin:18px 0 28px}
+#gate button{font:500 15px "Jost",Arial,sans-serif;letter-spacing:.06em;background:#A84B2F;color:#FBF9F6;border:0;border-radius:999px;padding:14px 28px;cursor:pointer}
+#gate button:hover{background:#8E3E26}
+#gate .err{color:#A3243B;font-size:14px;margin-top:18px;min-height:1em}
+#gate .spin{width:28px;height:28px;border:2px solid #DED6CC;border-top-color:#A84B2F;border-radius:50%;margin:8px auto;animation:sp 1s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+#sync{position:fixed;left:50%;bottom:56px;transform:translateX(-50%);z-index:9999;background:#3A2A1E;color:#FBF9F6;border-radius:999px;padding:10px 12px 10px 18px;font:400 14px "Jost",Arial,sans-serif;display:none;align-items:center;gap:12px;box-shadow:0 6px 24px rgba(0,0,0,.18);max-width:calc(100vw - 32px);box-sizing:border-box}
+#sync button{font:500 13px "Jost",Arial,sans-serif;background:#A84B2F;color:#fff;border:0;border-radius:999px;padding:7px 14px;cursor:pointer;white-space:nowrap}
+#who{position:fixed;right:12px;bottom:12px;z-index:9998;font:400 12px "Jost",Arial,sans-serif;color:#826856;background:rgba(251,249,246,.9);border:1px solid rgba(46,37,32,.14);border-radius:999px;padding:6px 12px;display:none}
+#who a{color:#A84B2F;cursor:pointer;margin-left:6px;text-decoration:underline}
+</style>
+</head>
+<body>
+<div id="gate"><div class="card">
+  <div class="logo"><span>Inmo</span><svg viewBox="0 0 20 56" class="ibld-s" aria-hidden="true"><path d="M1 3.5h18" stroke="#A84B2F" stroke-width="2.4" stroke-linecap="round"/><rect x="2.5" y="3.5" width="15" height="49" fill="#ECE7E0" stroke="#A84B2F" stroke-width="2"/><g fill="#737F97"><rect x="4.5" y="10" width="4" height="4.6"/><rect x="11.5" y="10" width="4" height="4.6"/><rect x="4.5" y="18" width="4" height="4.6"/><rect x="4.5" y="26" width="4" height="4.6"/><rect x="11.5" y="26" width="4" height="4.6"/><rect x="4.5" y="34" width="4" height="4.6"/><rect x="11.5" y="34" width="4" height="4.6"/></g><rect x="11.5" y="18" width="4" height="4.6" fill="#E2B566"/><path d="M7.5 52.5v-8h5v8" fill="#A84B2F"/><path d="M0 52.5h20" stroke="#C18450" stroke-width="2.4" stroke-linecap="round"/></svg><span>Calm</span></div>
+  <div id="gate-body"><div class="spin" aria-label="Cargando"></div></div>
+  <div class="err" id="gate-err" role="alert"></div>
+</div></div>
+<div id="sync" role="status"><span id="sync-t">Hay cambios nuevos</span><button type="button" onclick="location.reload()">Actualizar</button></div>
+<div id="who"></div>
+
+<script type="module">
+import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {getAuth,GoogleAuthProvider,signInWithPopup,signInWithRedirect,getRedirectResult,onAuthStateChanged,signOut,setPersistence,browserLocalPersistence} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import {initializeFirestore,persistentLocalCache,persistentMultipleTabManager,doc,getDoc,setDoc,onSnapshot,serverTimestamp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig={"apiKey": "AIzaSyAAdbB8LA93i2IYb5dTaL2Yclf_x1sIZc0", "authDomain": "inmocalm-2.firebaseapp.com", "projectId": "inmocalm-2", "storageBucket": "inmocalm-2.firebasestorage.app", "messagingSenderId": "170179945074", "appId": "1:170179945074:web:80af65142e513750bc98eb"};
+const ALLOWED=["jesusmolownyencinas@gmail.com","elealvarezg@gmail.com"];
+const NAMES={"jesusmolownyencinas@gmail.com":"Jesús","elealvarezg@gmail.com":"Elena"};
+const SHARED=new Set(["ic2-cobros","ic2-extras","ic2-sumi","ic2-inc","ic2-inc-del","ic2-gx","ic2-cat","ic2-gx-del"]);
+
+const app=initializeApp(firebaseConfig);
+const auth=getAuth(app);
+const db=initializeFirestore(app,{localCache:persistentLocalCache({tabManager:persistentMultipleTabManager()})});
+const $=id=>document.getElementById(id);
+const gateBody=$("gate-body"),gateErr=$("gate-err");
+
+function showLogin(msg){
+  gateBody.innerHTML=`<p>Gestión de los pisos de Jesús y Elena.<br>Entra con tu cuenta de Google.</p><button type="button" id="login">Entrar con Google</button>`;
+  gateErr.textContent=msg||"";
+  $("login").onclick=async()=>{
+    gateErr.textContent="";
+    const prov=new GoogleAuthProvider();prov.setCustomParameters({prompt:"select_account"});
+    try{await setPersistence(auth,browserLocalPersistence);await signInWithPopup(auth,prov)}
+    catch(e){
+      if(e.code==="auth/popup-blocked"||e.code==="auth/operation-not-supported-in-this-environment"){await signInWithRedirect(auth,prov)}
+      else if(e.code!=="auth/popup-closed-by-user"&&e.code!=="auth/cancelled-popup-request"){gateErr.textContent="No se pudo entrar ("+e.code+")"}
+    }
+  };
+}
+getRedirectResult(auth).catch(e=>{gateErr.textContent="No se pudo entrar ("+e.code+")"});
+
+let started=false;
+onAuthStateChanged(auth,async user=>{
+  if(!user){if(!started)showLogin();return}
+  const email=(user.email||"").toLowerCase();
+  if(!ALLOWED.includes(email)||!user.emailVerified){
+    await signOut(auth);showLogin("La cuenta "+email+" no tiene acceso a InmoCalm.");return;
+  }
+  if(started)return;started=true;
+  gateBody.innerHTML=`<div class="spin" aria-label="Cargando"></div><p>Cargando…</p>`;
+  try{await boot(user,email)}catch(e){console.error(e);started=false;gateErr.textContent="Error al cargar: "+(e.code||e.message)}
+});
+
+const refCode=doc(db,"inmocalm","codigo"),refState=doc(db,"inmocalm","estado");
+
+/* Admin: lets Claude (via Jesús's signed-in browser) publish new app versions. */
+window.__ic2={
+  buf:"",
+  add(s){this.buf+=s;return this.buf.length},
+  async publish(meta){const o=JSON.parse(this.buf);this.buf="";await setDoc(refCode,{...o,...(meta||{}),by:auth.currentUser.email,at:serverTimestamp()});return "ok v"+o.v},
+  async exportState(){const s=await getDoc(refState);return JSON.stringify(s.exists()?s.data():{})}
+};
+
+async function boot(user,email){
+  const [cs,ss]=await Promise.all([getDoc(refCode),getDoc(refState)]);
+  if(!cs.exists()){gateBody.innerHTML=`<p>Has entrado como ${NAMES[email]||email}.<br>La app aún no está instalada: pídeselo a Claude.</p>`;return}
+  const C=cs.data(),S=ss.exists()?ss.data():{};
+  const cache={};for(const k of SHARED)if(typeof S[k]==="string")cache[k]=S[k];
+  window.STORE={
+    getItem(k){if(SHARED.has(k))return k in cache?cache[k]:null;try{return localStorage.getItem(k)}catch(_){return null}},
+    setItem(k,v){v=String(v);if(SHARED.has(k)){if(cache[k]===v)return;cache[k]=v;setDoc(refState,{[k]:v,_by:email,_at:serverTimestamp()},{merge:true}).catch(e=>console.error("No se guardó",e));return}try{localStorage.setItem(k,v)}catch(_){}},
+    removeItem(k){this.setItem(k,SHARED.has(k)?"":"")}
+  };
+  // mount app
+  const st=document.createElement("style");st.textContent=C.style;document.head.appendChild(st);
+  $("gate").remove();
+  const host=document.createElement("div");host.id="app";host.innerHTML=C.body;document.body.prepend(host);
+  const sc=document.createElement("script");sc.textContent=C.script;document.body.appendChild(sc);
+  const who=$("who");who.innerHTML=`${NAMES[email]||email}<a id="logout">Salir</a>`;who.style.display="block";
+  $("logout").onclick=async()=>{await signOut(auth);location.reload()};
+  // live sync: show a banner when the other person changes something
+  let first=true;
+  onSnapshot(refState,s=>{
+    if(first){first=false;return}
+    if(s.metadata.hasPendingWrites)return;
+    const d=s.data()||{};let changed=false;
+    for(const k of SHARED){if(typeof d[k]==="string"&&d[k]!==cache[k]){changed=true}}
+    if(changed&&d._by&&d._by!==email){$("sync-t").textContent=(NAMES[d._by]||"Alguien")+" ha hecho cambios";$("sync").style.display="flex"}
+  });
+  let firstC=true;
+  onSnapshot(refCode,s=>{if(firstC){firstC=false;return}if(s.metadata.hasPendingWrites)return;const d=s.data();if(d&&d.v!==C.v){$("sync-t").textContent="Hay una versión nueva de InmoCalm";$("sync").style.display="flex"}});
+}
+</script>
+</body>
+</html>
