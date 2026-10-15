@@ -45,7 +45,8 @@ import {initializeFirestore,persistentLocalCache,persistentMultipleTabManager,do
 const firebaseConfig={"apiKey": "AIzaSyAAdbB8LA93i2IYb5dTaL2Yclf_x1sIZc0", "authDomain": "inmocalm-2.firebaseapp.com", "projectId": "inmocalm-2", "storageBucket": "inmocalm-2.firebasestorage.app", "messagingSenderId": "170179945074", "appId": "1:170179945074:web:80af65142e513750bc98eb"};
 const ALLOWED=["jesusmolownyencinas@gmail.com","elealvarezg@gmail.com"];
 const NAMES={"jesusmolownyencinas@gmail.com":"Jesús","elealvarezg@gmail.com":"Elena"};
-const SHARED=new Set(["ic2-cobros","ic2-extras","ic2-sumi","ic2-inc","ic2-inc-del","ic2-gx","ic2-cat","ic2-gx-del"]);
+const LOCAL=new Set(["ic2-zone","ic2-sim"]);
+const isShared=k=>k.startsWith("ic2-")&&!LOCAL.has(k);
 
 const app=initializeApp(firebaseConfig);
 const auth=getAuth(app);
@@ -94,11 +95,11 @@ async function boot(user,email){
   const [cs,ss]=await Promise.all([getDoc(refCode),getDoc(refState)]);
   if(!cs.exists()){gateBody.innerHTML=`<p>Has entrado como ${NAMES[email]||email}.<br>La app aún no está instalada: pídeselo a Claude.</p>`;return}
   const C=cs.data(),S=ss.exists()?ss.data():{};
-  const cache={};for(const k of SHARED)if(typeof S[k]==="string")cache[k]=S[k];
+  const cache={};for(const k in S)if(isShared(k)&&typeof S[k]==="string")cache[k]=S[k];
   window.STORE={
-    getItem(k){if(SHARED.has(k))return k in cache?cache[k]:null;try{return localStorage.getItem(k)}catch(_){return null}},
-    setItem(k,v){v=String(v);if(SHARED.has(k)){if(cache[k]===v)return;cache[k]=v;setDoc(refState,{[k]:v,_by:email,_at:serverTimestamp()},{merge:true}).catch(e=>console.error("No se guardó",e));return}try{localStorage.setItem(k,v)}catch(_){}},
-    removeItem(k){this.setItem(k,SHARED.has(k)?"":"")}
+    getItem(k){if(isShared(k))return k in cache?cache[k]:null;try{return localStorage.getItem(k)}catch(_){return null}},
+    setItem(k,v){v=String(v);if(isShared(k)){if(cache[k]===v)return;cache[k]=v;setDoc(refState,{[k]:v,_by:email,_at:serverTimestamp()},{merge:true}).catch(e=>console.error("No se guardó",e));return}try{localStorage.setItem(k,v)}catch(_){}},
+    removeItem(k){this.setItem(k,"")}
   };
   // mount app
   const st=document.createElement("style");st.textContent=C.style;document.head.appendChild(st);
@@ -113,7 +114,7 @@ async function boot(user,email){
     if(first){first=false;return}
     if(s.metadata.hasPendingWrites)return;
     const d=s.data()||{};let changed=false;
-    for(const k of SHARED){if(typeof d[k]==="string"&&d[k]!==cache[k]){changed=true}}
+    for(const k in d){if(isShared(k)&&typeof d[k]==="string"&&d[k]!==cache[k]){changed=true}}
     if(changed&&d._by&&d._by!==email){$("sync-t").textContent=(NAMES[d._by]||"Alguien")+" ha hecho cambios";$("sync").style.display="flex"}
   });
   let firstC=true;
