@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#F6F4F0">
+<meta name="theme-color" content="#F4ECDF">
 <meta name="robots" content="noindex,nofollow">
 <title>InmoCalm</title>
 <link rel="icon" type="image/png" href="icon-192.png">
@@ -15,28 +15,28 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Italiana&family=Jost:wght@300;400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400&family=Jost:wght@300;400;500&display=swap">
 <style id="shell-css">
-html,body{margin:0;background:#F6F4F0;color:#3A2A1E;font-family:"Jost",Arial,sans-serif}
+html,body{margin:0;background:#F4ECDF;color:#2B231E;font-family:"Jost",Arial,sans-serif}
 #gate{min-height:100vh;min-height:100dvh;display:flex;align-items:center;justify-content:center;padding:24px 16px;box-sizing:border-box}
 #gate .card{max-width:360px;width:100%;text-align:center}
-#gate .logo{display:flex;align-items:flex-end;justify-content:center;gap:2px;font-family:"Italiana",Georgia,serif;font-size:52px;line-height:1;letter-spacing:.02em}
-#gate .logo{color:#A84B2F}#gate .logo em{font-style:normal;color:#C18450}#gate .logo .ibld-s{height:.74em;width:auto;margin:0 .03em 0 0}#gate .logo .imoon{height:.68em;width:auto;margin-right:.01em}#gate .logo{align-items:baseline}
-#gate p{color:#826856;font-size:15px;line-height:1.5;margin:18px 0 28px}
-#gate button{font:500 15px "Jost",Arial,sans-serif;letter-spacing:.06em;background:#A84B2F;color:#FBF9F6;border:0;border-radius:999px;padding:14px 28px;cursor:pointer}
-#gate button:hover{background:#8E3E26}
+#gate .logo{display:flex;align-items:center;justify-content:center;gap:.16em;font-family:"Fraunces",Georgia,serif;font-weight:300;font-size:54px;line-height:1;letter-spacing:-.02em;color:#2B231E}
+#gate .logo em{font-style:normal;color:#A4472A}#gate .logo svg{height:.8em;width:auto;flex:none}
+#gate p{color:#6B5B4D;font-size:15px;line-height:1.5;margin:18px 0 28px}
+#gate button{font:500 15px "Jost",Arial,sans-serif;letter-spacing:.06em;background:#A4472A;color:#FBF7F0;border:0;border-radius:999px;padding:14px 28px;cursor:pointer}
+#gate button:hover{background:#7D2A16}
 #gate .err{color:#A3243B;font-size:14px;margin-top:18px;min-height:1em}
-#gate .spin{width:28px;height:28px;border:2px solid #DED6CC;border-top-color:#A84B2F;border-radius:50%;margin:8px auto;animation:sp 1s linear infinite}
+#gate .spin{width:28px;height:28px;border:2px solid #D8C6AC;border-top-color:#A4472A;border-radius:50%;margin:8px auto;animation:sp 1s linear infinite}
 @keyframes sp{to{transform:rotate(360deg)}}
-#sync{position:fixed;left:50%;bottom:56px;transform:translateX(-50%);z-index:9999;background:#3A2A1E;color:#FBF9F6;border-radius:999px;padding:10px 12px 10px 18px;font:400 14px "Jost",Arial,sans-serif;display:none;align-items:center;gap:12px;box-shadow:0 6px 24px rgba(0,0,0,.18);max-width:calc(100vw - 32px);box-sizing:border-box}
-#sync button{font:500 13px "Jost",Arial,sans-serif;background:#A84B2F;color:#fff;border:0;border-radius:999px;padding:7px 14px;cursor:pointer;white-space:nowrap}
-#who{position:fixed;right:12px;bottom:12px;z-index:9998;font:400 12px "Jost",Arial,sans-serif;color:#826856;background:rgba(251,249,246,.9);border:1px solid rgba(46,37,32,.14);border-radius:999px;padding:6px 12px;display:none}
-#who a{color:#A84B2F;cursor:pointer;margin-left:6px;text-decoration:underline}
+#sync{position:fixed;left:50%;bottom:56px;transform:translateX(-50%);z-index:9999;background:#2B231E;color:#FBF7F0;border-radius:999px;padding:10px 12px 10px 18px;font:400 14px "Jost",Arial,sans-serif;display:none;align-items:center;gap:12px;box-shadow:0 6px 24px rgba(0,0,0,.18);max-width:calc(100vw - 32px);box-sizing:border-box}
+#sync button{font:500 13px "Jost",Arial,sans-serif;background:#A4472A;color:#fff;border:0;border-radius:999px;padding:7px 14px;cursor:pointer;white-space:nowrap}
+#who{position:fixed;right:12px;bottom:12px;z-index:9998;font:400 12px "Jost",Arial,sans-serif;color:#6B5B4D;background:rgba(251,247,240,.9);border:1px solid rgba(43,35,30,.14);border-radius:999px;padding:6px 12px;display:none}
+#who a{color:#A4472A;cursor:pointer;margin-left:6px;text-decoration:underline}
 </style>
 </head>
 <body>
 <div id="gate"><div class="card">
-  <div class="logo"><svg viewBox="-10 0 40 56" class="ibld-s" aria-hidden="true"><path d="M1 3.5h18" stroke="#A84B2F" stroke-width="2.4" stroke-linecap="round"/><rect x="2.5" y="3.5" width="15" height="49" fill="#ECE7E0" stroke="#A84B2F" stroke-width="2"/><g fill="#737F97"><rect x="4.5" y="10" width="4" height="4.6"/><rect x="11.5" y="10" width="4" height="4.6"/><rect x="4.5" y="18" width="4" height="4.6"/><rect x="4.5" y="26" width="4" height="4.6"/><rect x="11.5" y="26" width="4" height="4.6"/><rect x="4.5" y="34" width="4" height="4.6"/><rect x="11.5" y="34" width="4" height="4.6"/></g><rect x="11.5" y="18" width="4" height="4.6" fill="#E2B566"/><path d="M7.5 52.5v-8h5v8" fill="#A84B2F"/><path d="M0 52.5h20" stroke="#C18450" stroke-width="2.4" stroke-linecap="round"/><path d="M-5.5 9.6Q-5.5 13 -2.1 13Q-5.5 13 -5.5 16.4Q-5.5 13 -8.9 13Q-5.5 13 -5.5 9.6Z" fill="#C18450"/><path d="M-3.2 25.1Q-3.2 27 -1.3000000000000003 27Q-3.2 27 -3.2 28.9Q-3.2 27 -5.1 27Q-3.2 27 -3.2 25.1Z" fill="#E2B566"/><path d="M25.2 16.3Q25.2 19 27.9 19Q25.2 19 25.2 21.7Q25.2 19 22.5 19Q25.2 19 25.2 16.3Z" fill="#E2B566"/><path d="M26.4 33.2Q26.4 35 28.2 35Q26.4 35 26.4 36.8Q26.4 35 24.599999999999998 35Q26.4 35 26.4 33.2Z" fill="#C18450"/></svg><span>nmo<em><svg viewBox="0.5 2.5 28.7 35" class="imoon" aria-hidden="true"><path d="M19.23 3.04A17 17 0 1 0 26.66 34.63A16.3 16.3 0 0 1 19.23 3.04Z" fill="#C18450"/><path d="M25 10.4Q25 13 27.6 13Q25 13 25 15.6Q25 13 22.4 13Q25 13 25 10.4Z" fill="#E2B566"/></svg>alm</em></span></div>
+  <div class="logo"><svg viewBox="2 30 110 80" aria-hidden="true"><path d="M6 104 H34 V82 H58 V60 L82 38 L106 60 V104" stroke="#A4472A" stroke-width="9" stroke-linecap="square" fill="none"/><rect x="77" y="66" width="10" height="10" fill="#C9845F"/></svg><span>inmo<em>calm</em></span></div>
   <div id="gate-body"><div class="spin" aria-label="Cargando"></div></div>
   <div class="err" id="gate-err" role="alert"></div>
 </div></div>
